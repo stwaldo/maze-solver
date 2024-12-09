@@ -1,17 +1,17 @@
 
-from tkinter import Canvas, Tk
+from tkinter import BOTH, Canvas, Tk
 
 
 class Window:
     def __init__(self, width, height):
         self.root = Tk()
         self.root.title = "Maze Solver"
-        self.canvas = Canvas(self.root, width=width, height=height)
-        self.canvas.pack()
-        self.running = False
         self.root.protocol("WM_DELETE_WINDOW", self.close)
+        self.canvas = Canvas(self.root, width=width, height=height, bg='white')
+        self.canvas.pack(fill=BOTH, expand=1)
+        self.running = False
     
-    def draw_line(self, line, fill_color):
+    def draw_line(self, line, fill_color="black"):
         line.draw(self.canvas, fill_color)
     
     def redraw(self):
@@ -36,6 +36,6 @@ class Line:
         self.start = start
         self.end = end
         
-    def draw(self, canvas, fill_color):
+    def draw(self, canvas, fill_color="black"):
         canvas.create_line(self.start.x, self.start.y, self.end.x, self.end.y, fill=fill_color, width=2)
         
