@@ -18,6 +18,7 @@ class Maze:
             self._seed = random.seed(seed)
         self._create_cells()
         self._break_entrance_and_exit()
+        self._break_walls_r(0, 0)
 
     def _create_cells(self):
         for i in range(self._num_cols):
@@ -53,14 +54,30 @@ class Maze:
         self._cells[i][j].visited = True
         while True:
             to_visit = []
-            # check cells that are adjacent to the current cell. Keep track of any that have not been visited as possible directions to move to
             if i > 0 and not self._cells[i - 1][j].visited:
                 to_visit.append((i - 1, j))
-            if i < self._num_cols - 1 and not self._cells[i + 1][j].visited:
-                to_visit.append((i + 1, j))
             if j > 0 and not self._cells[i][j - 1].visited:
                 to_visit.append((i, j - 1))
+            if i < self._num_cols - 1 and not self._cells[i + 1][j].visited:
+                to_visit.append((i + 1, j))
             if j < self._num_rows - 1 and not self._cells[i][j + 1].visited:
                 to_visit.append((i, j + 1))
             if len(to_visit) == 0:
-                self._cells[i][j].d
+                self._draw_cell(i, j)
+                return
+            next_i, next_j = random.choice(to_visit)
+            # knock down the walls between the current and chosen cell
+            if next_i < i:
+                self._cells[i][j].has_left_wall = False
+                self._cells[next_i][next_j].has_right_wall = False
+            elif next_i > i:
+                self._cells[i][j].has_right_wall = False
+                self._cells[next_i][next_j].has_left_wall = False
+            elif next_j < j:
+                self._cells[i][j].has_top_wall = False
+                self._cells[next_i][next_j].has_bottom_wall = False
+            elif next_j > j:
+                self._cells[i][j].has_bottom_wall = False
+                self._cells[next_i][next_j].has_top_wall = False
+            self._break_walls_r(next_i, next_j)
+            
